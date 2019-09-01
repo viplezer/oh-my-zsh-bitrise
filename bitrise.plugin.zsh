@@ -99,6 +99,10 @@ function _bitrise_url() {
 }
 
 function _bitrise_build_start() {
+    if ! [ -x "$(command -v brew)" ]; then
+        echo 'Error: python3 is necessary to use this feature!'
+        exit 1
+    fi
     result=$(curl -s -X POST -H "Authorization: $1" "$api_url/$2/builds" -d '{"hook_info":{"type":"bitrise"},"build_params":{"branch":"develop", "workflow_id": "'"$3"'" }}')
     start_status=$(echo $result | python3 -c "import sys, json; print(json.load(sys.stdin)['status'])")
     if [[ $start_status == "ok" ]]; then
